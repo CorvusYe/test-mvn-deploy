@@ -2,7 +2,7 @@ name: snapshot
 
 on:
   push:
-    branches: [ main ]
+    branches: [ java8 ]
   schedule:
     - cron: '0 6 * * *'
 
