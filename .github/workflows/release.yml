@@ -1,0 +1,43 @@
+name: release
+
+on:
+  release:
+    types: [released, pre-released]
+
+jobs:
+  release:
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Check out Git repository
+        uses: actions/checkout@v3
+
+      - name: Install nebula-graph
+        run: |
+          mkdir tmp
+          pushd tmp
+          git clone https://github.com/vesoft-inc/nebula-docker-compose.git
+          pushd nebula-docker-compose/
+          cp ../../src/test/resources/docker-compose.yaml .
+          docker-compose up -d
+          sleep 30
+          docker-compose ps
+          popd
+          popd
+
+      - name: Setup Java and Apache Maven Central
+        uses: actions/setup-java@v3
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+          gpg-private-key: ${{ secrets.GPG_SECRET }}  # Import GPG key
+          gpg-passphrase: ${{ secrets.GPG_PASSWORD }}  # GPG passphrase
+          server-id: ossrh  # Server ID for Maven Central
+          server-username: MAVEN_USERNAME  # Environment variable for Maven username
+          server-password: MAVEN_PASSWORD  # Environment variable for Maven password
+
+      - name: Publish package
+        run: mvn --batch-mode deploy -Dmaven.javadoc.skip=true
+        env:
+          MAVEN_USERNAME: ${{ secrets.OSSRH_USER }}
+          MAVEN_PASSWORD: ${{ secrets.OSSRH_PASSWORD }}
+          MAVEN_GPG_PASSPHRASE: ${{ secrets.GPG_PASSWORD }}
