@@ -15,6 +15,17 @@
     <artifactId>test-mvn-deploy</artifactId>
     <version>1.2.0-jdk17</version>
 
+    <description>A project what test the maven deploy process</description>
+    
+    <url>https://github.com/CorvusYe/test-mvn-deploy</url>
+
+    <licenses>
+        <license>
+            <name>The Apache Software License, Version 2.0</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+        </license>
+    </licenses>
+
     <properties>
         <maven.compiler.source>8</maven.compiler.source>
         <maven.compiler.target>8</maven.compiler.target>
